@@ -17,25 +17,30 @@ using namespace std;
 
 int main() {
 	
-	while(true) {
+	bool exitXeu;
+	
+	while(!exitXeu) {
 		pid_t pid, t_pid;
 		int child_status;
+
+		printf("%s=> ", getenv("USER"));
+		ParsingState p = StreamParser().parse();
+
+		std::vector<Command> commands = p.commands();
+		const char* filename = commands.front().filename();
+		char* const* argv = commands.front().argv();
+
+		if(strcmp(filename, "exit") == 0) {
+			exitXeu = true;
+		}
 
 		pid = fork();
 
 		if(pid == -1) {
 			fprintf(stderr, "Fork failed!");
 		}
-
+		
 		if(pid == 0) {
-			printf("%s=> ", getenv("USER"));
-			ParsingState p = StreamParser().parse();
-
-			std::vector<Command> commands = p.commands();
-
-			const char* filename = commands.front().filename();
-			char* const* argv = commands.front().argv();
-
 			execvp(filename, argv);
 		} else {
 			do {
