@@ -15,13 +15,12 @@
 using namespace xeu_utils;
 using namespace std;
 
-int main() {
+int main() 
+{
 	
-	bool exitXeu;
-	
-	while(!exitXeu) {
+	while(true) {
 		pid_t pid, t_pid;
-		int child_status;
+		int child_status, exec_status;
 
 		printf("%s=> ", getenv("USER"));
 		ParsingState p = StreamParser().parse();
@@ -31,25 +30,29 @@ int main() {
 		char* const* argv = commands.front().argv();
 
 		if(strcmp(filename, "exit") == 0) {
-			exitXeu = true;
+			break;
 		}
 
 		pid = fork();
 
 		if(pid == -1) {
-			fprintf(stderr, "Fork failed!");
+			fprintf(stderr, "Fork failed!\n");
 		}
 		
 		if(pid == 0) {
-			execvp(filename, argv);
+			exec_status = execvp(filename, argv);
+
+			if(exec_status == -1) {
+				fprintf(stderr, "Something went wrong!\n");
+				exit(EXIT_FAILURE);
+			}
 		} else {
-			do {
-				t_pid = waitpid(pid, &child_status, WUNTRACED | WCONTINUED);
-				if(t_pid == -1) {
-					perror("waitpid");
-					exit(EXIT_FAILURE);
-				}	
-			} while(t_pid != pid);
+			t_pid = waitpid(pid, &child_status, 0);
+			
+			if(t_pid == -1) {
+				fprintf(stderr, "Waitpid!\n");
+				exit(EXIT_FAILURE);
+			}
 		}
 	}
 
