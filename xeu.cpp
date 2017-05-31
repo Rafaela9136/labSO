@@ -15,45 +15,75 @@
 using namespace xeu_utils;
 using namespace std;
 
-int main() 
+int main()
 {
-	
-	while(true) {
-		pid_t pid, t_pid;
-		int child_status, exec_status;
+	int fd[2];
+	pid_t pid1, pid2;
 
+	while(true) {
+
+		//User input
 		printf("%s=> ", getenv("USER"));
 		ParsingState p = StreamParser().parse();
+		vector<Command> commands = p.commands();
 
-		std::vector<Command> commands = p.commands();
-		const char* filename = commands.front().filename();
-		char* const* argv = commands.front().argv();
+		const char* filename = commands.at(0).filename();	
+		char* const* args = commands.at(0).argv();
+		char* const* args2 = commands.at(1).argv();
 
 		if(strcmp(filename, "exit") == 0) {
 			break;
 		}
 
-		pid = fork();
+		//Pipe
+		pipe(fd);
 
-		if(pid == -1) {
-			fprintf(stderr, "Fork failed!\n");
-		}
-		
-		if(pid == 0) {
-			exec_status = execvp(filename, argv);
+		//First child
+		pid1 = fork();
 
-			if(exec_status == -1) {
-				fprintf(stderr, "Something went wrong!\n");
-				exit(EXIT_FAILURE);
-			}
-		} else {
-			t_pid = waitpid(pid, &child_status, 0);
-			
-			if(t_pid == -1) {
-				fprintf(stderr, "Waitpid!\n");
-				exit(EXIT_FAILURE);
-			}
+		if (pid1 < 0) {
+			perror("First fork() failed!");
+			return -1;
 		}
+
+		if (pid1 == 0) {
+			// Set the process output to the input of the pipe
+			close(1);
+			dup(fd[1]);
+			close(fd[0]);
+			close(fd[1]);
+	
+			execvp(args[0],commands.at(0).argv());
+			perror("First execvp() failed");
+			return -1;
+		}
+
+		//Second child
+		pid2 = fork();
+
+		if (pid2 < 0) {
+			perror("Second fork() failed!");
+			return -1;
+		}
+
+		if (pid2 == 0) {
+			// Set the process input to the output of the pipe
+			close(0);
+			dup(fd[0]);
+			close(fd[0]);
+			close(fd[1]);
+
+			execvp(args2[0], commands.at(1).argv());
+			perror("Second execvp() failed");
+			return -1;
+		}
+
+		close(fd[0]);
+		close(fd[1]);
+
+		// Wait for the children to finish, then exit
+		waitpid(pid1,NULL,0);
+		waitpid(pid2,NULL,0);
 	}
 
 	return 0;
