@@ -26,53 +26,55 @@ using namespace xeu_utils;
 using namespace std;
 
 int command(const char* args, char* const*  params, int input, int first, int last);
-static void cleanup(int n);
+static void waitChilds(int cmds);
 
 int main()
 {
-	int numCmds;
+	int numCmds, input, first;
 	const char* arg;
-
 	
 	while(true) {
-
-		//User input
 		printf("%s=> ", getenv("USER"));
 		ParsingState p = StreamParser().parse();
 		vector<Command> commands = p.commands();	
 
+		if (strcmp(commands.at(0).filename(), "exit") == 0) {
+          	break;
+        }
+
 		numCmds = commands.size();
-		int input = 0;
-		int first = 1;
+		input = 0;
+		first = 1;
 
 		if(numCmds > 0) {
 			for(int i = 0; i < numCmds-1; i++) {
 				arg = commands.at(i).filename();
-
-				if (strcmp(arg, "exit") == 0) {
-          			return 0;
-        		}
-
+				
 				input = command(arg, commands.at(i).argv(), input, first, 0);
-
 				first = 0;
 			}
 
 			command(commands.at(numCmds-1).filename(), commands.at(numCmds-1).argv(), input, first, 1);
 		}	
 
-		cleanup(numCmds);
+		waitChilds(numCmds);
 		numCmds = 0;
 	}			
 	return 0;
 }
 
+/** Run each command separately.
+* command = Command to execute.
+* args = Command parameters.
+* input = Result of the last command, if is the first command input will be 0.
+* first = 1 if is the first command.
+* last = 1 if is the last command.
+*/
 int command(const char* command, char* const* args, int input, int first, int last) 
 {
 	int pp[2];
 	pipe(pp);
 
-	//Fork
 	pid_t pid = fork();
 
 	if(pid == -1) {
@@ -109,9 +111,13 @@ int command(const char* command, char* const* args, int input, int first, int la
 	return pp[READ];
 }
 
-static void cleanup(int n)
+/**
+* Waits for each created process to complete.
+* cmds = Number of commands tiped by the user.
+*/
+static void waitChilds(int cmds)
 {
-	int i;
-	for (i = 0; i < n; ++i) 
+	for (int i = 0; i < cmds; ++i) {
 		wait(NULL); 
+	}
 }
