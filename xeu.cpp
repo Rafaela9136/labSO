@@ -1,4 +1,11 @@
 #include "xeu_utils/StreamParser.h"
+#include "xeu_utils/Command.h"
+#include "xeu_utils/ParsingState.h"
+
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 #include <iostream>
 #include <vector>
@@ -10,81 +17,101 @@
 #include <sys/syscall.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
 #define gettid() syscall(SYS_gettid)
+#define READ  0
+#define WRITE 1
 
 using namespace xeu_utils;
 using namespace std;
 
+int command(const char* args, char* const*  params, int input, int first, int last);
+static void cleanup(int n);
+
 int main()
 {
-	int fd[2];
-	pid_t pid1, pid2;
+	int numCmds;
+	const char* arg;
 
+	
 	while(true) {
 
 		//User input
 		printf("%s=> ", getenv("USER"));
 		ParsingState p = StreamParser().parse();
-		vector<Command> commands = p.commands();
+		vector<Command> commands = p.commands();	
 
-		const char* filename = commands.at(0).filename();	
-		char* const* args = commands.at(0).argv();
-		char* const* args2 = commands.at(1).argv();
+		numCmds = commands.size();
+		int input = 0;
+		int first = 1;
 
-		if(strcmp(filename, "exit") == 0) {
-			break;
-		}
+		if(numCmds > 0) {
+			for(int i = 0; i < numCmds-1; i++) {
+				arg = commands.at(i).filename();
 
-		//Pipe
-		pipe(fd);
+				if (strcmp(arg, "exit") == 0) {
+          			return 0;
+        		}
 
-		//First child
-		pid1 = fork();
+				input = command(arg, commands.at(i).argv(), input, first, 0);
 
-		if (pid1 < 0) {
-			perror("First fork() failed!");
-			return -1;
-		}
+				first = 0;
+			}
 
-		if (pid1 == 0) {
-			// Set the process output to the input of the pipe
-			close(1);
-			dup(fd[1]);
-			close(fd[0]);
-			close(fd[1]);
-	
-			execvp(args[0],commands.at(0).argv());
-			perror("First execvp() failed");
-			return -1;
-		}
+			command(commands.at(numCmds-1).filename(), commands.at(numCmds-1).argv(), input, first, 1);
+		}	
 
-		//Second child
-		pid2 = fork();
+		cleanup(numCmds);
+		numCmds = 0;
+	}			
+	return 0;
+}
 
-		if (pid2 < 0) {
-			perror("Second fork() failed!");
-			return -1;
-		}
+int command(const char* command, char* const* args, int input, int first, int last) 
+{
+	int pp[2];
+	pipe(pp);
 
-		if (pid2 == 0) {
-			// Set the process input to the output of the pipe
-			close(0);
-			dup(fd[0]);
-			close(fd[0]);
-			close(fd[1]);
+	//Fork
+	pid_t pid = fork();
 
-			execvp(args2[0], commands.at(1).argv());
-			perror("Second execvp() failed");
-			return -1;
-		}
-
-		close(fd[0]);
-		close(fd[1]);
-
-		// Wait for the children to finish, then exit
-		waitpid(pid1,NULL,0);
-		waitpid(pid2,NULL,0);
+	if(pid == -1) {
+		perror("Fork failed!");
+		exit(EXIT_FAILURE);
 	}
 
-	return 0;
+	if(pid == 0) {
+		if(first == 1 && last == 0 && input == 0) {
+			dup2(pp[WRITE], STDOUT_FILENO);
+		} else if (first == 0 && last == 0 && input != 0) {
+			dup2(input, STDIN_FILENO);
+			dup2(pp[WRITE], STDOUT_FILENO);
+		} else {
+			dup2(input, STDIN_FILENO);
+		}
+
+		if(execvp(command, args) == -1) {
+			perror("Exec failed!");
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	if(input != 0) {
+		close(input);
+	}
+
+	close(pp[WRITE]);
+
+	if(last == 1) {
+		close(pp[READ]);
+	}
+
+	return pp[READ];
+}
+
+static void cleanup(int n)
+{
+	int i;
+	for (i = 0; i < n; ++i) 
+		wait(NULL); 
 }
