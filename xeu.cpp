@@ -38,9 +38,9 @@ int main()
 		ParsingState p = StreamParser().parse();
 		vector<Command> commands = p.commands();	
 
-		//if (strcmp(commands.at(0).filename(), "exit") == 0) {
-          	//	break;
-      		//}
+		if (strcmp(commands.at(0).filename(), "exit") == 0) {
+          	break;
+      	}
 
 		numCmds = commands.size();
 		input = 0;
@@ -49,15 +49,9 @@ int main()
 		if(numCmds > 0) {
 			for(int i = 0; i < numCmds-1; i++) {
 				arg = commands.at(i).filename();
-				
-				if(strcmp(arg, "exit") == 0) {
-					break;
-				}
-				
 				input = command(arg, commands.at(i).argv(), input, first, 0);
 				first = 0;
 			}
-
 			command(commands.at(numCmds-1).filename(), commands.at(numCmds-1).argv(), input, first, 1);
 		}	
 
