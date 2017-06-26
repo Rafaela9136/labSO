@@ -1,8 +1,10 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,11 +15,6 @@ class myps
 {
 	final static File folder = new File("/proc");
 	static Map<String,List<String>> pids = new HashMap<String,List<String>>();
-
-	public static void main(String[] args) {
-		listFiles(folder);
-		printPids("0", 0); 
-	}
 
 	public static void listFiles(final File folder) {
 		for (final File fileEntry : folder.listFiles()) {
@@ -69,5 +66,10 @@ class myps
 			string = " " + string;
 		}
 		return string;
+	}
+
+	public static void main(String[] args) {
+		listFiles(folder);
+		printPids("0", 0); 
 	}
 }
