@@ -92,7 +92,22 @@ public class Topzera {
 		return processState;	
 	}
 
-	public static void main(String[] args) {
+	public static void printTable() {
+		List<String> PIDs = getAllPIDs();
 
+		System.out.println("PID    | User    |    PROCNAME    | Estado |");
+		System.out.println("-------|---------|----------------|--------|");
+		for(int i = 0; i < 20; i++) {
+			String pid = PIDs.get(i);
+			String uid = getProcessUid(pid);
+			String userName = getUserName(uid);
+			String processName = getProcessName(pid);
+			String processState = getProcessState(pid);
+			System.out.printf("%-7s|%-9s|%-16s|%-8s|\n", pid, userName, processName, processState);
+		}
+	}
+
+	public static void main(String[] args) {
+		printTable();
 	}
 }
