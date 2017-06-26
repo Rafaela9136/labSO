@@ -111,7 +111,7 @@ public class Topzera {
 	public static void killProcess(String command) {
 		String[] cmds = command.split(" ");
 		
-		if(cmds[1].equals("1") && cmds.lenght > 1) {
+		if(cmds.length > 1 && cmds[1].equals("1")) {
 			try {
 				Runtime.getRuntime().exec("kill -9 " + cmds[0]).waitFor();
 			} catch (Exception e) {
