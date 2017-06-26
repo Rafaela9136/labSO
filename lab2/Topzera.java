@@ -111,7 +111,7 @@ public class Topzera {
 	public static void killProcess(String command) {
 		String[] cmds = command.split(" ");
 		
-		if(cmds[1].equals("1")) {
+		if(cmds[1].equals("1") && cmds.lenght > 1) {
 			try {
 				Runtime.getRuntime().exec("kill -9 " + cmds[0]).waitFor();
 			} catch (Exception e) {
@@ -122,18 +122,11 @@ public class Topzera {
 
 
 	public static void main(String[] args) {
-		while(true) {
-			printTable();
+		printTable();
 
-			Scanner reader = new Scanner(System.in);
-			System.out.printf(">");
-			String cmd = reader.nextLine();
-
-			if(cmd.equals("exit"))
-				break;
-
-			killProcess(cmd);
-
-		}
+		Scanner reader = new Scanner(System.in);
+		System.out.printf(">");
+		String cmd = reader.nextLine();
+		killProcess(cmd);
 	}
 }
