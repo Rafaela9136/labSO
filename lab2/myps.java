@@ -6,13 +6,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.Map;
+import java.util.HashMap;
 
 class myps
 {
 	final static File folder = new File("/proc");
-	static SortedMap<String,List<String>> pids = new TreeMap<String,List<String>>();
+	static Map<String,List<String>> pids = new HashMap<String,List<String>>();
 
 	public static void main(String[] args) {
 		listFiles(folder);
