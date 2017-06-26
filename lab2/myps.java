@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -26,14 +27,12 @@ class myps
 		}
 	}
 
-	private static List<String> readFile(String filename) {
-		List<String> records = new ArrayList<String>();
+	private static void readFile(String filename) {
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(filename));
 			String pid, ppid;
 
-			pid = Files.readAllLines(Paths.get(filename)).get(5).split("	")[1];
-			ppid = Files.readAllLines(Paths.get(filename)).get(6).split("	")[1];
+			pid = Files.readAllLines(Paths.get(filename)).get(4).split("	")[1];
+			ppid = Files.readAllLines(Paths.get(filename)).get(5).split("	")[1];
 	
 			if(pids.get(ppid) == null) {
 				List<String> pf = new ArrayList<String>();
@@ -43,15 +42,11 @@ class myps
 			} else {
 				pids.get(ppid).add(pid);
 			}
-	
-		    reader.close();
-		    return records;
 		}
 		catch (Exception e)
 		{
 			System.err.format("Exception occurred trying to read '%s'.", filename);
 	    	e.printStackTrace();
-	    	return null;
 		}
 	}
 
