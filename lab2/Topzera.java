@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Topzera {
 
@@ -97,7 +98,7 @@ public class Topzera {
 
 		System.out.println("PID    | User    |    PROCNAME    | Estado |");
 		System.out.println("-------|---------|----------------|--------|");
-		for(int i = 0; i < 20; i++) {
+		for(int i = 0; i < PIDs.size(); i++) {
 			String pid = PIDs.get(i);
 			String uid = getProcessUid(pid);
 			String userName = getUserName(uid);
@@ -107,7 +108,32 @@ public class Topzera {
 		}
 	}
 
+	public static void killProcess(String command) {
+		String[] cmds = command.split(" ");
+		
+		if(cmds[1].equals("1")) {
+			try {
+				Runtime.getRuntime().exec("kill -9 " + cmds[0]).waitFor();
+			} catch (Exception e) {
+				System.out.println("Something went wrong!");
+			}
+		}
+	}
+
+
 	public static void main(String[] args) {
-		printTable();
+		while(true) {
+			printTable();
+
+			Scanner reader = new Scanner(System.in);
+			System.out.printf(">");
+			String cmd = reader.nextLine();
+
+			if(cmd.equals("exit"))
+				break;
+
+			killProcess(cmd);
+
+		}
 	}
 }
