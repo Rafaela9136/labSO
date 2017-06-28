@@ -93,40 +93,54 @@ public class Topzera {
 		return processState;	
 	}
 
+	public static void clearScreen() {
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+	}
+
 	public static void printTable() {
 		List<String> PIDs = getAllPIDs();
 
-		System.out.println("PID    | User    |    PROCNAME    | Estado |");
-		System.out.println("-------|---------|----------------|--------|");
-		for(int i = 0; i < PIDs.size(); i++) {
+		System.out.println("PID    |       User       |      PROCNAME      | Estado |");
+		System.out.println("-------|------------------|--------------------|--------|");
+		for(int i = 0; i < 20; i++) {
 			String pid = PIDs.get(i);
 			String uid = getProcessUid(pid);
 			String userName = getUserName(uid);
 			String processName = getProcessName(pid);
 			String processState = getProcessState(pid);
-			System.out.printf("%-7s|%-9s|%-16s|%-8s|\n", pid, userName, processName, processState);
+			System.out.printf("%-7s|%-18s|%-20s|%-8s|\n", pid, userName, processName, processState);
 		}
 	}
 
-	public static void killProcess(String command) {
-		String[] cmds = command.split(" ");
-		
-		if(cmds.length > 1 && cmds[1].equals("1")) {
-			try {
-				Runtime.getRuntime().exec("kill -9 " + cmds[0]).waitFor();
-			} catch (Exception e) {
-				System.out.println("Something went wrong!");
-			}
-		}
-	}
-
+	//public static void killProcess(String command) {
+	//	String[] cmds = command.split(" ");
+	//	
+	//	if(cmds.length > 1 && cmds[1].equals("1")) {
+	//		try {
+	//			Runtime.getRuntime().exec("kill -9 " + cmds[0]).waitFor();
+	//		} catch (Exception e) {
+	//			System.out.println("Something went wrong!");
+	//		}
+	//	}
+	//}
 
 	public static void main(String[] args) {
-		printTable();
+		while(true) {
+			try {
+				clearScreen();
 
-		Scanner reader = new Scanner(System.in);
-		System.out.printf(">");
-		String cmd = reader.nextLine();
-		killProcess(cmd);
+				printTable();
+
+				Thread.sleep(1000);
+
+				//Scanner reader = new Scanner(System.in);
+				//System.out.printf(">");
+				//String cmd = reader.nextLine();
+				//killProcess(cmd);
+			} catch(InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }
