@@ -103,7 +103,7 @@ public class Topzera {
 
 		System.out.println("PID    |       User       |      PROCNAME      | Estado |");
 		System.out.println("-------|------------------|--------------------|--------|");
-		for(int i = 0; i < 20; i++) {
+		for(int i = 0; i < PIDs.size(); i++) {
 			String pid = PIDs.get(i);
 			String uid = getProcessUid(pid);
 			String userName = getUserName(uid);
@@ -113,17 +113,17 @@ public class Topzera {
 		}
 	}
 
-	//public static void killProcess(String command) {
-	//	String[] cmds = command.split(" ");
-	//	
-	//	if(cmds.length > 1 && cmds[1].equals("1")) {
-	//		try {
-	//			Runtime.getRuntime().exec("kill -9 " + cmds[0]).waitFor();
-	//		} catch (Exception e) {
-	//			System.out.println("Something went wrong!");
-	//		}
-	//	}
-	//}
+	public static void killProcess(String command) {
+		String[] cmds = command.split(" ");
+		
+		if(cmds.length > 1 && cmds[1].equals("1")) {
+			try {
+				Runtime.getRuntime().exec("kill -9 " + cmds[0]).waitFor();
+			} catch (Exception e) {
+				System.out.println("Something went wrong!");
+			}
+		}
+	}
 
 	public static void main(String[] args) {
 		while(true) {
@@ -132,12 +132,16 @@ public class Topzera {
 
 				printTable();
 
-				Thread.sleep(1000);
+				Scanner reader = new Scanner(System.in);
+				System.out.printf(">");
+				String cmd = reader.nextLine();
 
-				//Scanner reader = new Scanner(System.in);
-				//System.out.printf(">");
-				//String cmd = reader.nextLine();
-				//killProcess(cmd);
+				if(cmd.equals("exit")) 
+					break;
+
+				killProcess(cmd);
+				Thread.sleep(1000);
+				
 			} catch(InterruptedException e) {
 				e.printStackTrace();
 			}
