@@ -53,7 +53,10 @@ public class Topzera {
 			BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
 			String line = input.readLine();
-			userName = line.split(":")[0];
+
+			if(line != null) {
+				userName = line.split(":")[0];
+			}
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
