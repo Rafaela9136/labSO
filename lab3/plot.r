@@ -7,6 +7,6 @@ data_path = args[1]
 data = read.table(sep = " ", data_path, header = T)
 summary(data)
 
-data$elapsed = data$end - data$start
+data$elapsed = (data$end - data$start)/1000000
 p = ggplot(data=data, aes(x=factor(mode), y=elapsed, color=factor(mode), group=factor(mode))) + geom_boxplot()
 ggsave("elapsed.png", p)

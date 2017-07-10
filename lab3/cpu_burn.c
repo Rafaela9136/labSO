@@ -21,8 +21,7 @@ int main() {
     uint64_t eTimestamp = (end.tv_sec*1000000L) + end.tv_usec;
 
 
-    printf("%lu %lu\n", sTimestamp, eTimestamp);
-   // printf("Time in microsseconds: %lu microsseconds\n", eTimestamp - sTimestamp); 
+    printf("%llu %llu\n", sTimestamp, eTimestamp);
 
     return 0;
 }
