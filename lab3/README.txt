@@ -1,3 +1,5 @@
+Execução:
+
 1. gcc -o cpu_burn ./cpu_burn.c
 2. chmod +x ./run_p2.sh
 3. chmod +x ./run_all.sh
