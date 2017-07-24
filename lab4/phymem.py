@@ -15,23 +15,50 @@ class PhysicalMemory:
     assert algorithm in {"fifo", "nru", "aging", "second-chance"}
     self.algorithm = algorithm
 
+    if(algorithm = "fifo"):
+      self.implementation = Fifo()
+
   def put(self, frameId):
     """Allocates this frameId for some page"""
     # Notice that in the physical memory we don't care about the pageId, we only
     # care about the fact we were requested to allocate a certain frameId
-    pass
+    implementation.put(self, frameId)
 
   def evict(self):
     """Deallocates a frame from the physical memory and returns its frameId"""
     # You may assume the physical memory is FULL so we need space!
     # Your code must decide which frame to return, according to the algorithm
-    pass
+    return implementation.evict(self)
 
   def clock(self):
     """The amount of time we set for the clock has passed, so this is called"""
     # Clear the reference bits (and/or whatever else you think you must do...)
-    pass
+    implementation.clock(self)
 
   def access(self, frameId, isWrite):
     """A frameId was accessed for read/write (if write, isWrite=True)"""
+    implementation.access(self, frameId, isWrite)
+
+class Fifo:
+  global m
+  page = []
+
+  for i range(m):
+    page.append(-1)
+
+  def put(self, frameId):
+      if(page[-1] != -1)
+        evict()
+      page.append(frameId)
+
+  def evict(self):
+    if(len(page) > 0):
+      frameId = page.pop(0)
+      return frameId
+    return -1
+
+  def clock(self):
+    pass
+
+  def access(self, frameId, isWrite):
     pass
