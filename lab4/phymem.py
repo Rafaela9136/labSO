@@ -15,7 +15,7 @@ class PhysicalMemory:
     assert algorithm in {"fifo", "nru", "aging", "second-chance"}
     self.algorithm = algorithm
 
-    if(algorithm = "fifo"):
+    if(algorithm == "fifo"):
       self.implementation = Fifo()
 
   def put(self, frameId):
@@ -39,23 +39,18 @@ class PhysicalMemory:
     """A frameId was accessed for read/write (if write, isWrite=True)"""
     implementation.access(self, frameId, isWrite)
 
-class Fifo:
-  global m
-  page = []
 
-  for i range(m):
-    page.append(-1)
+class Fifo:
+  def __init__(self):
+    self.page = []
 
   def put(self, frameId):
-      if(page[-1] != -1)
-        evict()
-      page.append(frameId)
+    self.page.append(frameId)
 
   def evict(self):
-    if(len(page) > 0):
-      frameId = page.pop(0)
-      return frameId
-    return -1
+    if(len(self.page) > 0):
+      return int(self.page.pop(0)
+    return 0
 
   def clock(self):
     pass
