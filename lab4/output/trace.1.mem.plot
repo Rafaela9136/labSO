@@ -1,0 +1,9 @@
+nfaults,nframes,alg
+138523,16,fifo
+98035,32,fifo
+302856,4,fifo
+205360,8,fifo
+626328,16,lru
+616120,32,lru
+671275,4,lru
+651002,8,lru
