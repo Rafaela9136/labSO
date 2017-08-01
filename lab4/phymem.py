@@ -70,6 +70,28 @@ class Fifo:
 
 #Least Recent Used
 class LRU:
+  '''def __init__(self):
+    self.frames = {}
+
+  def put(self, frameId):
+    self.frames[frameId] = 1
+
+  def evict(self):
+    if(len(self.frames) > 0):
+      min_frame = self.frames.keys()[0]
+
+      for frame in self.frames.keys():
+        if self.frames[frame] < self.frames[min_frame]:
+          min_frame = frame
+
+      return self.frames.pop(min_frame)
+    return 0
+
+  def clock(self):
+    pass
+
+  def access(self, frameId, isWrite):
+    self.frames[frameId] += 1'''
   def __init__(self):
     self.frames = []
 
