@@ -49,7 +49,7 @@ class PhysicalMemory:
     """A frameId was accessed for read/write (if write, isWrite=True)"""
     self.implementation.access(frameId, isWrite)
 
-
+#First In First Out
 class Fifo:
   def __init__(self):
     self.frames = []
@@ -68,6 +68,7 @@ class Fifo:
   def access(self, frameId, isWrite):
     pass
 
+#Least Recent Used
 class LRU:
   def __init__(self):
     self.frames = {}
@@ -82,7 +83,8 @@ class LRU:
       for frame in self.frames.keys():
         if self.frames[frame] < self.frames[min_frame]:
           min_frame = frame
-      return min_frame
+
+      return self.frames.pop(min_frame)
     return 0
 
   def clock(self):
@@ -91,6 +93,7 @@ class LRU:
   def access(self, frameId, isWrite):
     self.frames[frameId] += 1
 
+#Not Recently Used
 class NRU:
   def __init__(self):
     self.frames = {}
@@ -122,6 +125,7 @@ class NRU:
     if(isWrite):
       frames[frameId] = {'r':1,'m':1}
 
+#Second Chance
 class SecondChance:
   def __init__(self):
     self.frames = []
