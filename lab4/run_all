@@ -6,7 +6,7 @@ clock=200
 
 for trace in trace.1 trace.2
 do
-	for alg in fifo lru
+	for alg in fifo lru nru aging
 	#fifo nru aging second-chance
     #for alg in fifo aging
     do
