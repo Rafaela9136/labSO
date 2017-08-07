@@ -170,24 +170,21 @@ class SecondChance:
     self.frames.append([frameId, 1])
 
   def evict(self):
-    if(len(self.frames) > 0):
-      bit = r_bits.pop(0)
-      sc_frame = frames.pop(0)
+    pageFrame = self.frames.pop(0)
 
-      if(bit == 0):
-        return sc_frame
-      else:
-        frames.append(sc_frame)
-        r_bits.append(0)
-        return evict(self)
-    return 0
+    while pageFrame[1]:
+      self.frames.append([pageFrame[0], 0])
+      pageFrame = self.frames.pop(0)
+
+    return pageFrame[0]
 
   def clock(self):
     pass
-
+  
   def access(self, frameId, isWrite):
-    if(isWrite):
-      frames[frameId] = 1
+    for f_id in self.frames:
+      if frameId == f_id[0]:
+        f_id[1] = 1
 
 #Belady
 class Belady:
