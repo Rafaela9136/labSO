@@ -199,9 +199,9 @@ class Belady:
     if(len(self.frames) > 0):
       highest_label = 0
       frame_id_highest_label = 0
-      for frameId in frames:
-        if(frames[frameId] > highest_label):
-          highest_label = frames[frameId]
+      for frameId in self.frames:
+        if(self.frames[frameId] > highest_label):
+          highest_label = self.frames[frameId]
           frame_id_highest_label = frameId
     return frame_id_highest_label
 
