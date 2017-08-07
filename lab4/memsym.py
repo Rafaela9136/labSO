@@ -11,6 +11,7 @@ class VirtualMemory:
         self.nframes = nframes
         self.frame2page = {}
         self.freeFrames = set(range(nframes))
+        self.highest_label = 0;
 
     def __build_page_table__(self, npages):
         for i in range(npages):
@@ -18,22 +19,29 @@ class VirtualMemory:
             mapped = False
             r = False
             m = False
+            #label = -1
             self.page_table[i] = (-1, mapped, r, m)
+            #self.page_table[i] = (-1, mapped, r, m, label)
 
     def access(self, page_id, write_mode):
         (frame_id, mapped, r, m) = self.page_table[page_id]
+        #(frame_id, mapped, r, m, label) = self.page_table[page_id]
         if mapped:
             self.phy_mem.access(frame_id, write_mode)
             self.page_table[page_id] = (frame_id, mapped, True, write_mode)
+            #self.page_table[page_id] = (frame_id, mapped, True, write_mode, label)
         else:
             if len(self.freeFrames) > 0:
                 new_frame_id = self.freeFrames.pop()
                 self.frame2page[new_frame_id] = page_id
                 self.page_table[page_id] = (new_frame_id, True, True, write_mode)
+                #self.page_table[page_id] = (new_frame_id, True, True, write_mode, label)
                 self.phy_mem.put(new_frame_id)
                 self.phy_mem.access(new_frame_id, write_mode)
             else:
+                #page_id_higuest_label = self.find_highest_label()
                 evicted_frame_id = self.phy_mem.evict()
+                #evicted_frame_id = self.phy_mem.evict(page_id)
                 assert type(evicted_frame_id) == int, "frameId returned by evict should be an int"
                 page_id_out = self.frame2page.get(evicted_frame_id, None)
                 assert page_id_out is not None, "frameId returned by evict should be allocated"
@@ -43,13 +51,28 @@ class VirtualMemory:
 
                 #allocate the new frame
                 self.phy_mem.put(evicted_frame_id)
+                
                 #mudar mappeamento pagina in
                 self.page_table[page_id] = (evicted_frame_id, True, True, write_mode)
+                #self.page_table[page_id] = (evicted_frame_id, True, True, write_mode, label)
+
                 #update frame2page
                 self.frame2page[evicted_frame_id] = page_id
                 self.phy_mem.access(evicted_frame_id, write_mode)
                 return 1
         return 0
+
+        '''
+        def find_highest_label(self):
+            highest_label = 0
+            page_id_highest_label = 0 #returns if there's no label greater the 0
+            for page_id in self.page_table:
+                (frame_id, mapped, r, m, label) = self.page_table[page_id]
+                if label > highest_label:
+                    highest_label = label
+                    page_id_highest_label = page_id
+            return page_id_highest_label
+        '''
 
 if __name__ == "__main__":
 

@@ -1,3 +1,5 @@
+from random import randint
+
 # This is the only file you must implement
 
 # This file will be imported from the main code. The PhysicalMemory class
@@ -26,7 +28,7 @@ class PhysicalMemory:
     elif (algorithm == "second-chance"):
       self.implementation = SecondChance()
     elif (algorithm == "belady"):
-      self.implementation = SecondChance()
+      self.implementation = Belady()
 
   def put(self, frameId):
     """Allocates this frameId for some page"""
@@ -136,6 +138,7 @@ class NRU:
         frame[1] = 1
         frame[2] = isWrite
 
+#Aging
 class Aging:
   def __init__(self):
     self.page_frames = []
@@ -185,3 +188,28 @@ class SecondChance:
   def access(self, frameId, isWrite):
     if(isWrite):
       frames[frameId] = 1
+
+#Belady
+class Belady:
+  def __init__(self):
+    self.frames = {}
+
+  def put(self, frameId):
+    label = randint(0,10000)
+    self.frames[frameId] = label
+
+  def evict(self):
+    if(len(self.frames) > 0):
+      highest_label = 0
+      frame_id_highest_label = 0
+      for frameId in frames:
+        if(frames[frameId] > highest_label):
+          highest_label = frames[frameId]
+          frame_id_highest_label = frameId
+    return frame_id_highest_label
+
+  def clock(self):
+    pass
+
+  def access(self, frameId, isWrite):
+    pass
