@@ -1,5 +1,5 @@
 package algorithms;
 
-public class Elevator {
+public class Elevator implements Algorithm {
 
 }

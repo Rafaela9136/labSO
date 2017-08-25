@@ -1,5 +1,5 @@
 package algorithms;
 
-public class FirstComeFirstServed {
+public class FirstComeFirstServed implements Algorithm {
 
 }

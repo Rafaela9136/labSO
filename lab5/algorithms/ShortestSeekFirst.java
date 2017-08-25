@@ -1,5 +1,5 @@
 package algorithms;
 
-public class ShortestSeekFirst {
+public class ShortestSeekFirst implements Algorithm {
 
 }
