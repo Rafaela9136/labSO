@@ -29,9 +29,9 @@ public class ShortestSeekFirst {
 	private void processRequest(Integer request) {
 		seekOrder.add(request);
 		requests.remove(request);
+		
 		if(!requests.isEmpty()) {
 			Integer next = closest(request);
-
 			processRequest(next);
 		}
 	}
