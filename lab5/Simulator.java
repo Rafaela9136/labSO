@@ -23,20 +23,22 @@ public class Simulator {
 
 		System.out.println("Requisições: " + requests.toString());
 
-		System.out.println("Executando o First-Come First-Served..");
+		System.out.println("\nExecutando o First-Come First-Served..");
 		FirstComeFirstServed fcfs = new FirstComeFirstServed(diskCylinders, requests);
 		fcfs.processAllRequests();
-
 		System.out.println("Número de movimentos do braço: " + fcfs.getNumberArmMotions());
 
-		/*
-		initializeRequestList(); //Popula o queue com números randômicos
+		System.out.println("\nExecutando o Shortest Seek First..");
+		ShortestSeekFirst ssf = new ShortestSeekFirst(requests);
+		ssf.processAllRequests();
+		System.out.println("Ordem de seek: " + ssf.getSeekOrder());
+		System.out.println("Número de movimentos do braço: " + ssf.getNumberArmMotions());
 
-		System.out.println("Disco: " + requests.toString());
-		System.out.println("Tamanho do disco: " + requests.size());
-
-		runAlgorithm(); //Seleciona e executa o algoritmo
-		*/
+		System.out.println("\nExecutando o Elevator..");
+		Elevator evt = new Elevator(diskCylinders, requests);
+		evt.processAllRequests();
+		System.out.println("Ordem de seek: " + evt.getSeekOrder());
+		System.out.println("Número de movimentos do braço: " + evt.getNumberArmMotions());
 	}
 
 	/*
@@ -55,23 +57,5 @@ public class Simulator {
 		for(int i = 0; i < 80; i++) {
 			diskCylinders.add(i, 0);
 		}
-	}
-
-	/*
-	public static void runAlgorithm() {
-		Algorithm[] algs = new Algorithm[] {new FirstComeFirstServed(diskCylinders, requests), new ShortestSeekFirst(),
-											new Elevator(), new Antecipatory()};
-		for (Algorithm alg : algs) {
-			System.out.println("\nSimulando " + alg.getClass().getSimpleName());
-
-			Algorithm algorithm = alg; //?
-
-			sequenceOfSeeks();//Imprime a sequência de seeks do algoritmo //?
-		}
-	}
-	*/
-
-	public static void sequenceOfSeeks(){
-		//TODO
 	}
 }

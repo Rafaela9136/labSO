@@ -2,7 +2,7 @@ package algorithms;
 
 import java.util.*;
 
-public class FirstComeFirstServed implements Algorithm{
+public class FirstComeFirstServed {
 
 	private int numberArmMotions;
 	private int currentPosition;
@@ -52,5 +52,4 @@ public class FirstComeFirstServed implements Algorithm{
 	public int getNumberArmMotions() {
 		return numberArmMotions;
 	}
-
 }

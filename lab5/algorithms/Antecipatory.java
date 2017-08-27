@@ -1,5 +1,5 @@
 package algorithms;
 
-public class Antecipatory implements Algorithm {
+public class Antecipatory {
 
 }
