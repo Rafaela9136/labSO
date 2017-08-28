@@ -35,7 +35,7 @@ public class Simulator {
 		System.out.println("Número de movimentos do braço: " + ssf.getNumberArmMotions());
 
 		System.out.println("\nExecutando o Elevator..");
-		Elevator evt = new Elevator(diskCylinders, requests);
+		Elevator evt = new Elevator(requests);
 		evt.processAllRequests();
 		System.out.println("Ordem de seek: " + evt.getSeekOrder());
 		System.out.println("Número de movimentos do braço: " + evt.getNumberArmMotions());

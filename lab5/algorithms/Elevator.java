@@ -1,24 +1,22 @@
 package algorithms;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Elevator {
 
-	private int numberArmMotions;
 	private int currentPosition;
 	private int direction;
 
 	private List<Integer> requests;
-	private List<Integer> diskCylinders;
 	private List<Integer> seekOrder;
 
-	public Elevator(List<Integer> diskCylinders, List<Integer> requests) {
-		this.requests = requests;
-		this.diskCylinders = diskCylinders;
+	public Elevator(List<Integer> requests) {
+		this.requests = new ArrayList<Integer>(requests);
 		this.seekOrder = new ArrayList<Integer>();
 
-		this.numberArmMotions = 0;
-		this.currentPosition = 0;
+		this.currentPosition = requests.size()/2;
 		this.direction = 1;
 	}
 
@@ -26,15 +24,30 @@ public class Elevator {
 	Processa todas as requisições.
 	*/
 	public void processAllRequests() {
-		processRequest(requests.get(requests.size()/2));
+		Collections.sort(requests);
+
+		List<Integer> before = requests.subList(0, currentPosition);
+		List<Integer> after = requests.subList(currentPosition, requests.size());
+
+		Collections.reverse(before);
+
+		for (int i = 0; i < requests.size(); i++) {
+			if(i < after.size()) {
+				direction = 1;
+				seekOrder.add(after.get(i));
+			} else {
+				direction = -1;
+				seekOrder.add(before.get(i-after.size()));
+			}
+			
+		}
 	}
 
 	/*
-	Processa uma requisição.
+	Indica a direção do disco que o algoritmo está indo.
 	*/
-	public void processRequest(Integer request) {
-		if(request > 0 && request < diskCylinders.size()) {
-		}
+	public int getDirection() {
+		return direction;
 	}
 
 	/*
@@ -49,6 +62,12 @@ public class Elevator {
 	mover para atender a todas as requisições.
 	*/
 	public int getNumberArmMotions() {
+		int numberArmMotions = 0;
+
+		for (int i = 0; i < requests.size()-1; i++) {
+			numberArmMotions += Math.abs(seekOrder.get(i)-seekOrder.get(i+1));
+		}
+
 		return numberArmMotions;
 	}
-}
+} 
