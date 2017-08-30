@@ -26,6 +26,7 @@ public class Simulator {
 		System.out.println("\nExecutando o First-Come First-Served..");
 		FirstComeFirstServed fcfs = new FirstComeFirstServed(diskCylinders, requests);
 		fcfs.processAllRequests();
+		System.out.println("Ordem de seek: " + fcfs.getSeekOrder());
 		System.out.println("Número de movimentos do braço: " + fcfs.getNumberArmMotions());
 
 		System.out.println("\nExecutando o Shortest Seek First..");

@@ -52,4 +52,12 @@ public class FirstComeFirstServed {
 	public int getNumberArmMotions() {
 		return numberArmMotions;
 	}
+
+	/*
+	Retorna a ordem em que as requisições foram acessadas.
+	*/
+	public List<Integer> getSeekOrder() {
+		return requests;
+	}
+
 }
