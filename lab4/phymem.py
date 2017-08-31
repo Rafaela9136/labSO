@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from random import randint
 
 # This is the only file you must implement
@@ -54,14 +56,14 @@ class PhysicalMemory:
 #First In First Out
 class Fifo:
   def __init__(self):
-    self.frames = []
+    self.frames = [] #Array
 
   def put(self, frameId):
-    self.frames.append(frameId)
+    self.frames.append(frameId) #Append normal - Entra no final da fila
 
   def evict(self):
     if(len(self.frames) > 0):
-      return int(self.frames.pop(0))
+      return int(self.frames.pop(0)) # remove o primeiro da fila
     return 0
 
   def clock(self):
@@ -72,94 +74,71 @@ class Fifo:
 
 #Least Recent Used
 class LRU:
-  '''def __init__(self):
-    self.frames = {}
-
-  def put(self, frameId):
-    self.frames[frameId] = 1
-
-  def evict(self):
-    if(len(self.frames) > 0):
-      min_frame = self.frames.keys()[0]
-
-      for frame in self.frames.keys():
-        if self.frames[frame] < self.frames[min_frame]:
-          min_frame = frame
-
-      return self.frames.pop(min_frame)
-    return 0
-
-  def clock(self):
-    pass
-
-  def access(self, frameId, isWrite):
-    self.frames[frameId] += 1'''
   def __init__(self):
-    self.frames = []
+    self.frames = [] # Array dos frames
 
   def put(self, frameId):
-    self.frames.append(frameId)
+    self.frames.append(frameId) # Salva o frame no final
 
   def evict(self):
     if(len(self.frames) > 0):
-      return self.frames.pop(0)
+      return self.frames.pop(0) #Tira o primeiro frame
     return 0
 
   def clock(self):
     pass
 
-  def access(self, frameId, isWrite):
-    self.frames.remove(frameId)
+  def access(self, frameId, isWrite): #Sempre que usar, remove e coloca no final, aí os primeiros
+    self.frames.remove(frameId)       #são os que foram menos usados 
     self.frames.append(frameId)
 
 #Not Recently Used
 class NRU:
   def __init__(self):
-    self.frames = []
+    self.frames = [] #Array de arrays [frameId, referenced, modifies]
 
   def put(self, frameId):
-    self.frames.append([frameId, 1, 1])
+    self.frames.append([frameId, 1, 1]) #Dá append na página com bit de referência e de modificado 1
 
   def evict(self):
     if(len(self.frames) > 0):
-      self.frames.sort(key=lambda pf: pf[2])
-      self.frames.sort(key=lambda pf: pf[1])
-
-      return self.frames.pop(0)[0]
+      self.frames.sort(key=lambda pf: pf[2])  # Ordena a partir do segundo dígito (modificado)
+      self.frames.sort(key=lambda pf: pf[1])  # Ordena a partir do primeiro dígito (referenciado)                                 
+      return self.frames.pop(0)[0] #Retorna o primeiro, o de menor prioridade naquela ordem
     return 0
 
   def clock(self):
     for frame in self.frames:
-      frame[1] = 0
+      frame[1] = 0 #Limpa os bits de referencia
 
   def access(self, frameId, isWrite):
     for frame in self.frames:
       if frame[0] == frameId:
-        frame[1] = 1
-        frame[2] = isWrite
+        frame[1] = 1 #Seta pra referenciado
+        frame[2] = isWrite #Se write for 1, seta pra modificado, se write for 0, seta pra não modificado huaahu
 
 #Aging
 class Aging:
   def __init__(self):
-    self.page_frames = []
+    self.page_frames = [] #Array de arrays [frameId, contador]
 
   def put(self, frameId):
-    self.page_frames.append([frameId, 0])
+    self.page_frames.append([frameId, 0]) #Append normal, contador em 0
 
   def evict(self):
-    self.page_frames.sort(key=lambda pf: pf[1])
+    self.page_frames.sort(key=lambda pf: pf[1]) #Faz o sort e pega o primeiro, que seria o menor número no contador
 
     return self.page_frames.pop(0)[0]
 
   def clock(self):
     for p_frame in self.page_frames:
-      p_frame[1] >>= 1
+      p_frame[1] >>= 1 #faz o shift, p_frame[1] faz shift de 1 casa pra direita
 
   def access(self, frameId, isWrite):
     for p_frame in self.page_frames:
       if p_frame[0] == frameId:
-        p_frame[1] >>= 1
-        p_frame[1] |= 256
+        p_frame[1] >>= 1 #faz shift, p_frame[1] faz shift de 1 casa pra direita
+        p_frame[1] |= 256 #OR binario e faz com que o contador do frame seja igual ao resultado
 
 #Second Chance
 class SecondChance:

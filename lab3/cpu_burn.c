@@ -9,9 +9,9 @@ int main() {
 
 	gettimeofday(&start, NULL);
 
-	int num = 0;
+	int num = 0; 
     while(num < 478000000) {
-	    pow(1.2, 2.3);
+	    pow(1.2, 2.3); //O número elevado ao segundo número
 	    num++;
     }
 
@@ -21,7 +21,7 @@ int main() {
     uint64_t eTimestamp = (end.tv_sec*1000000L) + end.tv_usec;
 
 
-    printf("%llu %llu\n", sTimestamp, eTimestamp);
+    printf("%lu %lu\n", sTimestamp, eTimestamp);
 
     return 0;
 }

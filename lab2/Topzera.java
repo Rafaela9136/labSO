@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 public class Topzera {
 
+	//Lista o pid de todos da pasta /proc
 	public static List<String> getAllPIDs() {
 		List<String> PIDs = new ArrayList<String>();
 
